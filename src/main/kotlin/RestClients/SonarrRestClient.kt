@@ -14,8 +14,8 @@ import javax.xml.ws.http.HTTPException
 
 
 class SonarrRestClient {
-    val logger = Logger(this.javaClass.name)
     var settings: Settings = Config().getSettings()
+    val logger = Logger(this.javaClass.name, settings)
     var url: String = settings.sonarrAddress
     val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     var client = OkHttpClient()

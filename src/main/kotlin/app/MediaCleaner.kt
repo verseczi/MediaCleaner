@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit
 
 
 class MediaCleaner {
-    val logger = Logger(this.javaClass.name)
     var settings = Config().getSettings()
+    val logger = Logger(this.javaClass.name, settings)
     var cancelled: Boolean = false
     var mServer = MediaServer()
     var sonarrRestClient = SonarrRestClient()

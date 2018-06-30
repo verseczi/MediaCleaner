@@ -10,8 +10,6 @@ import java.io.File
 
 
 class Config () {
-    val logger = Logger(this.javaClass.name)
-
     val dir = File(System.getProperty("java.class.path")).absoluteFile.parentFile.toString()
     val propertiesFile =  dir + System.getProperty("file.separator") + "Config.properties"
 

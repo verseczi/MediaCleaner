@@ -5,8 +5,8 @@ import com.mediacleaner.MediaServers.Emby
 import com.mediacleaner.Utils.Logger
 
 class MediaServer : IMediaServer {
-    val logger = Logger(this.javaClass.name)
-    private var settings = Config().getSettings()
+    var settings = Config().getSettings()
+    val logger = Logger(this.javaClass.name, settings)
     var timestamp: Long = 0
     private var timestamp_last: Long = 0
     private lateinit var mServer: IMediaServer

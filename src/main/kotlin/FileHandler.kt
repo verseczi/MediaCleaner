@@ -7,7 +7,7 @@ import com.mediacleaner.Utils.Logger
 import com.mediacleaner.DataModels.Sonarr.Episode as SonarrEpisode
 
 class FileHandler (mServer_: MediaServer, sonarrRestClient_: SonarrRestClient){
-    val logger = Logger(this.javaClass.name)
+    val logger = Logger(this.javaClass.name, mServer_.settings)
     val sonarrRestClient = sonarrRestClient_
     val mServer = mServer_
 

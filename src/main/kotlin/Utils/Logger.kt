@@ -1,11 +1,11 @@
 package com.mediacleaner.Utils
 
-import com.mediacleaner.Config
+import com.mediacleaner.DataModels.Settings
 import java.io.File
 import java.time.LocalDateTime
 
-class Logger (classPath: String){
-    val settings = Config().getSettings()
+class Logger (classPath: String, settings: Settings){
+    val settings = settings
     val classPath = classPath
     fun info(str: String) {
         val logMessage = "${LocalDateTime.now()} [INFO] $classPath: $str"

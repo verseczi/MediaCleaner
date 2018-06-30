@@ -1,7 +1,9 @@
 package com.mediacleaner.MediaServers
 
+import com.mediacleaner.Config
 import com.mediacleaner.DataModels.Emby.UserItems
 import com.mediacleaner.DataModels.Episode
+import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.IMediaServer
 import com.mediacleaner.RestClients.EmbyRestClient
 import com.mediacleaner.Utils.Logger
@@ -10,7 +12,6 @@ import java.util.*
 
 
 class Emby : IMediaServer {
-    val logger = Logger(this.javaClass.name)
     val embyRestClient = EmbyRestClient()
     lateinit var UserItemList: UserItems
 

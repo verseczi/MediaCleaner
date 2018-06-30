@@ -16,8 +16,8 @@ import okhttp3.RequestBody
 import javax.xml.ws.http.HTTPException
 
 class EmbyRestClient {
-    val logger = Logger(this.javaClass.name)
     private val settings = Config().getSettings()
+    val logger = Logger(this.javaClass.name, settings)
     val url = settings.embyAddress
     val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     var client = OkHttpClient()
