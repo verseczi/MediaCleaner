@@ -40,7 +40,7 @@ class Config () {
         properties.put("plexClientToken", settings.plexClientToken)
 
         // Save to file.
-        var fileOutputStream = FileOutputStream(propertiesFile)
+        val fileOutputStream = FileOutputStream(propertiesFile)
         properties.store(fileOutputStream, "I dont recommend changing this file if you dont know what you are doing-")
     }
 
@@ -57,7 +57,7 @@ class Config () {
                 properties.getProperty("mediaServer").toInt(),
                 properties.getProperty("debug").toBoolean(),
                 properties.getProperty("trace").toBoolean(),
-                properties.getProperty("logFile"),
+                dir + System.getProperty("file.separator") + properties.getProperty("logFile"),
 
                 properties.getProperty("sonarrApiKey"),
                 properties.getProperty("sonarrAddress"),
