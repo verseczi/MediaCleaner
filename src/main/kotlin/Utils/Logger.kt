@@ -1,22 +1,43 @@
 package com.mediacleaner.Utils
 
+import com.mediacleaner.Config
+import java.io.File
 import java.time.LocalDateTime
 
 class Logger (classPath: String){
+    val settings = Config().getSettings()
     val classPath = classPath
     fun info(str: String) {
-        println("${LocalDateTime.now()} [INFO] $classPath: $str")
+        val logMessage = "${LocalDateTime.now()} [INFO] $classPath: $str"
+        println(logMessage)
+        writeToFile(logMessage)
     }
 
     fun error(str: String) {
-        println("${LocalDateTime.now()} [ERROR] $classPath: $str")
+        val logMessage = "${LocalDateTime.now()} [ERROR] $classPath: $str"
+        println(logMessage)
+        writeToFile(logMessage)
     }
 
     fun debug(str: String) {
-        println("${LocalDateTime.now()} [DEBUG] $classPath: $str")
+        if(settings.debug) {
+            val logMessage = "${LocalDateTime.now()} [DEBUG] $classPath: $str"
+            println(logMessage)
+            writeToFile(logMessage)
+        }
     }
 
     fun trace(str: String) {
-        println("${LocalDateTime.now()} [TRACE] $classPath: $str")
+        if(settings.trace) {
+            val logMessage = "${LocalDateTime.now()} [TRACE] $classPath: $str"
+            println(logMessage)
+            writeToFile(logMessage)
+        }
     }
+
+    private fun writeToFile(log: String) {
+        if(settings.logFile != "")
+            File(settings.logFile).appendText(log + "\n")
+    }
+
 }

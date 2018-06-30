@@ -25,6 +25,7 @@ class Config () {
         properties.put("mediaServer", settings.mediaServer.toString())
         properties.put("debug", settings.debug.toString())
         properties.put("trace", settings.trace.toString())
+        properties.put("logFile", settings.logFile)
 
         properties.put("sonarrApiKey", settings.sonarrApiKey)
         properties.put("sonarrAddress", settings.sonarrAddress)
@@ -58,6 +59,7 @@ class Config () {
                 properties.getProperty("mediaServer").toInt(),
                 properties.getProperty("debug").toBoolean(),
                 properties.getProperty("trace").toBoolean(),
+                properties.getProperty("logFile"),
 
                 properties.getProperty("sonarrApiKey"),
                 properties.getProperty("sonarrAddress"),

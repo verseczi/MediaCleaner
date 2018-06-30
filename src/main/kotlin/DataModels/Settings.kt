@@ -8,6 +8,7 @@ data class Settings (
                     var mediaServer: Int = 0,
                     var debug: Boolean = false,
                     var trace: Boolean = false,
+                    var logFile: String = "",
 
                     var sonarrApiKey: String = "",
                     var sonarrAddress: String = "http://127.0.0.1:8989",
