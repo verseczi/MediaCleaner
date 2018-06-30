@@ -1,0 +1,57 @@
+package com.mediacleaner
+
+import com.mediacleaner.DataModels.Episode
+import com.mediacleaner.MediaServers.Emby
+import com.mediacleaner.Utils.Logger
+
+class MediaServer : IMediaServer {
+    val logger = Logger(this.javaClass.name)
+    private var settings = Config().getSettings()
+    var timestamp: Long = 0
+    private var timestamp_last: Long = 0
+    private lateinit var mServer: IMediaServer
+    private var mServerT = settings.mediaServer
+
+    init {
+        initMediaServer()
+    }
+
+    override fun getItem(EpisodePath: String): Episode? {
+        checkMediaServer()
+        val episode = mServer.getItem(EpisodePath)
+        if(episode != null)
+            return episode
+        return null
+    }
+
+    override fun checkConnection(): Boolean {
+        try {
+            checkMediaServer()
+        } catch (e: Exception) {
+            throw e
+        }
+
+        return mServer.checkConnection()
+    }
+
+    override fun checkSettings(): Boolean {
+        checkMediaServer()
+        return mServer.checkSettings()
+    }
+
+    private fun checkMediaServer() {
+        if(timestamp != timestamp_last || mServerT != settings.mediaServer)
+            initMediaServer()
+    }
+
+    private fun initMediaServer() {
+        when(settings.mediaServer) {
+            0 -> mServer = Emby()
+            //1 -> mServer = Plex()
+        }
+        timestamp_last = timestamp
+        mServerT = settings.mediaServer
+        settings = Config().getSettings()
+    }
+
+}
