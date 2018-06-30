@@ -57,7 +57,7 @@ class Config () {
                 properties.getProperty("mediaServer").toInt(),
                 properties.getProperty("debug").toBoolean(),
                 properties.getProperty("trace").toBoolean(),
-                dir + System.getProperty("file.separator") + properties.getProperty("logFile"),
+                properties.getProperty("logFile"),
 
                 properties.getProperty("sonarrApiKey"),
                 properties.getProperty("sonarrAddress"),
