@@ -4,9 +4,7 @@ import com.mediacleaner.DataModels.Settings
 import java.io.File
 import java.time.LocalDateTime
 
-class Logger (classPath: String, settings: Settings){
-    val settings = settings
-    val classPath = classPath
+class Logger (val classPath: String, val settings: Settings){
     fun info(str: String) {
         val logMessage = "${LocalDateTime.now()} [INFO] $classPath: $str"
         println(logMessage)
