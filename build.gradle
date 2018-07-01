@@ -35,7 +35,9 @@ dependencies {
 }
 
 run {
-    args += 'first_arg'
+    if ( project.hasProperty("args") ) {
+        args += project.args
+    }
 }
 
 compileKotlin {

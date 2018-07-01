@@ -1,11 +1,11 @@
 package com.mediacleaner
 
 import com.mediacleaner.DataModels.Episode
+import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.MediaServers.Emby
 import com.mediacleaner.Utils.Logger
 
-class MediaServer : IMediaServer {
-    var settings = Config().getSettings()
+class MediaServer (override var settings: Settings) : IMediaServer {
     val logger = Logger(this.javaClass.name, settings)
     var timestamp: Long = 0
     private var timestamp_last: Long = 0
@@ -46,12 +46,12 @@ class MediaServer : IMediaServer {
 
     private fun initMediaServer() {
         when(settings.mediaServer) {
-            0 -> mServer = Emby()
+            0 -> mServer = Emby(settings)
             //1 -> mServer = Plex()
         }
         timestamp_last = timestamp
         mServerT = settings.mediaServer
-        settings = Config().getSettings()
+        mServer
     }
 
 }

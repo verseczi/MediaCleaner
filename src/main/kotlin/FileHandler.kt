@@ -6,10 +6,8 @@ import com.mediacleaner.RestClients.SonarrRestClient
 import com.mediacleaner.Utils.Logger
 import com.mediacleaner.DataModels.Sonarr.Episode as SonarrEpisode
 
-class FileHandler (mServer_: MediaServer, sonarrRestClient_: SonarrRestClient){
-    val logger = Logger(this.javaClass.name, mServer_.settings)
-    val sonarrRestClient = sonarrRestClient_
-    val mServer = mServer_
+class FileHandler (private val mServer: MediaServer, private val sonarrRestClient: SonarrRestClient){
+    private val logger = Logger(this.javaClass.name, mServer.settings)
 
     fun getEpisodeListByOrder(episodeList_: List<Episode>): List<Episode> {
         val episodeList = episodeList_.sortedWith(compareBy<Episode> { it.SeriesName }.thenByDescending { it.SeasonNumber }.thenByDescending {it.EpisodeNumber})
@@ -45,7 +43,6 @@ class FileHandler (mServer_: MediaServer, sonarrRestClient_: SonarrRestClient){
     }
 
     fun deleteFile(filePath: String): Boolean {
-        sonarrRestClient.settings = Config().getSettings()
         var seriesList: List<Series>?
 
         try {
@@ -81,7 +78,6 @@ class FileHandler (mServer_: MediaServer, sonarrRestClient_: SonarrRestClient){
     }
 
     fun getFileList(): List<String> {
-        sonarrRestClient.settings = Config().getSettings()
         var fileList: MutableList<String> = mutableListOf()
         var seriesList: List<Series>?
 

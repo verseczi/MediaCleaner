@@ -11,8 +11,8 @@ import java.time.ZonedDateTime
 import java.util.*
 
 
-class Emby : IMediaServer {
-    val embyRestClient = EmbyRestClient()
+class Emby(override var settings: Settings) : IMediaServer {
+    val embyRestClient = EmbyRestClient(settings)
     lateinit var UserItemList: UserItems
 
     override fun getItem(EpisodePath: String): Episode? {

@@ -3,10 +3,10 @@ package com.mediacleaner.RestClients
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.mediacleaner.Config
 import com.mediacleaner.DataModels.Emby.AuthenticateByName
 import com.mediacleaner.DataModels.Emby.User
 import com.mediacleaner.DataModels.Emby.UserItems
+import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.Utils.HashUtils
 import com.mediacleaner.Utils.Logger
 import okhttp3.MediaType
@@ -15,15 +15,11 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import javax.xml.ws.http.HTTPException
 
-class EmbyRestClient {
-    private val settings = Config().getSettings()
-    val logger = Logger(this.javaClass.name, settings)
-    val url = settings.embyAddress
-    val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    var client = OkHttpClient()
-
-    init {
-    }
+class EmbyRestClient (val settings: Settings) {
+    private val logger = Logger(this.javaClass.name, settings)
+    private val url = settings.embyAddress
+    private val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client = OkHttpClient()
 
     fun checkConnection(): Boolean {
         val url = "$url/System/Info"
@@ -58,7 +54,7 @@ class EmbyRestClient {
         var content: String
         try {
             val response = client.newCall(request).execute()
-            var responseBody = response.body()
+            val responseBody = response.body()
             content = responseBody!!.string()
             response.body()?.close()
         } catch (e: Exception) {
@@ -74,16 +70,11 @@ class EmbyRestClient {
 
     fun getAccessToken(username: String, password: String = ""): AuthenticateByName {
         val url = "$url/Users/AuthenticateByName"
-
-        var passwordSha1 = HashUtils.sha1(password)
-        var passwordMd5 = HashUtils.md5(password)
-
-
         val json = """
             {
                 "Username":"${username}",
-                "password":"${passwordSha1}",
-                "passwordMd5":"${passwordMd5}",
+                "password":"${HashUtils.sha1(password)}",
+                "passwordMd5":"${HashUtils.md5(password)}",
             }
             """.trimIndent()
 
@@ -101,7 +92,6 @@ class EmbyRestClient {
 
     fun getPublicUsers(): List<User> {
         val url = "$url/Users/Public"
-
         val request = Request.Builder()
                 .url(url)
                 .build()

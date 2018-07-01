@@ -13,15 +13,11 @@ import okhttp3.Request
 import javax.xml.ws.http.HTTPException
 
 
-class SonarrRestClient {
-    var settings: Settings = Config().getSettings()
-    val logger = Logger(this.javaClass.name, settings)
-    var url: String = settings.sonarrAddress
-    val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    var client = OkHttpClient()
-
-    init {
-    }
+class SonarrRestClient (val settings: Settings) {
+    private val logger = Logger(this.javaClass.name, settings)
+    private var url: String = settings.sonarrAddress
+    private val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private var client = OkHttpClient()
 
     fun checkConnection(): Boolean {
         val url = "$url/system/status"
@@ -68,11 +64,9 @@ class SonarrRestClient {
                 .url(url)
                 .build()
 
-        var content: String
         try {
             val response = client.newCall(request).execute()
-            var content = response.body()!!.string()
-            response.close()
+            val content = response.body()!!.string()
             val episodeList = mapper.readValue<List<Episode>>(content)
             return episodeList
         } catch (e: Exception) {
@@ -88,7 +82,6 @@ class SonarrRestClient {
                 .url(url)
                 .build()
 
-        var content: String
         try {
             val response = client.newCall(request).execute()
             val seriesList = mapper.readValue<List<Series>>(response.body()!!.string())

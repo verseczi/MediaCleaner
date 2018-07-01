@@ -2,8 +2,7 @@ package com.mediacleaner.app
 
 import java.util.*
 
-class MediaCleanerTimer(mediaCleaner: MediaCleaner): TimerTask() {
-    private val mediaCleaner = mediaCleaner
+class MediaCleanerTimer(var mediaCleaner: MediaCleaner): TimerTask() {
     override fun run() {
         mediaCleaner.mediaCleaner()
         if(mediaCleaner.cancelled) {

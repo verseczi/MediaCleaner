@@ -13,7 +13,7 @@ class Config () {
     val dir = File(System.getProperty("java.class.path")).absoluteFile.parentFile.toString()
     val propertiesFile =  dir + System.getProperty("file.separator") + "Config.properties"
 
-    fun saveSettings(settings: Settings) {
+    fun saveConfig(settings: Settings) {
         val properties = Properties()
         println("yo?")
         properties.put("interval", settings.interval.toString())
@@ -44,7 +44,7 @@ class Config () {
         properties.store(fileOutputStream, "I dont recommend changing this file if you dont know what you are doing-")
     }
 
-    fun getSettings(): Settings {
+    fun getConfig(): Settings {
         val properties = Properties()
         val reader = FileReader(propertiesFile)
         properties.load(reader)

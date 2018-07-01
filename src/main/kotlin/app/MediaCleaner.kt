@@ -6,18 +6,17 @@ import com.mediacleaner.MediaServer
 import com.mediacleaner.RestClients.SonarrRestClient
 import com.mediacleaner.Utils.DateUtils
 import com.mediacleaner.Utils.Logger
+import com.mediacleaner.DataModels.Settings
 import java.net.SocketTimeoutException
 import java.time.LocalDate
 import java.util.Timer
 import java.util.concurrent.TimeUnit
 
-
-class MediaCleaner {
-    var settings = Config().getSettings()
+class MediaCleaner (private val settings: Settings) {
     val logger = Logger(this.javaClass.name, settings)
     var cancelled: Boolean = false
-    var mServer = MediaServer()
-    var sonarrRestClient = SonarrRestClient()
+    var mServer = MediaServer(settings)
+    var sonarrRestClient = SonarrRestClient(settings)
     val fileHandler = FileHandler(mServer, sonarrRestClient)
     var timer = Timer()
     var retry = 0
