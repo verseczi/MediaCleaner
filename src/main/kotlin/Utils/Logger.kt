@@ -51,13 +51,14 @@ class Logger (val classPath: String, val settings: Settings){
 
     private fun archive() {
         val dateFormat = SimpleDateFormat("yyyy.MM.dd.")
-        val formattedDate = dateFormat.format(Date(File(settings.logFile).lastModified()))
+        val formattedDate = dateFormat.format(Date(File(dir + System.getProperty("file.separator") + settings.logFile).lastModified()))
 
         if(formattedDate != dateFormat.format(DateUtils.asDate(LocalDateTime.now())))
         {
             val directory = File(dir + System.getProperty("file.separator") + "archive" + System.getProperty("file.separator"))
             if (!directory.exists())
                 directory.mkdir()
+
             Files.move(Paths.get(dir + System.getProperty("file.separator") + settings.logFile), Paths.get(dir + System.getProperty("file.separator") + "archive" + System.getProperty("file.separator") + formattedDate + "-" + settings.logFile))
         }
     }
