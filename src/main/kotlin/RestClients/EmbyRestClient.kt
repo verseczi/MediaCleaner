@@ -86,8 +86,17 @@ class EmbyRestClient (val settings: Settings) {
                 .url(url)
                 .build()
         val response = client.newCall(request).execute()
-        val user = mapper.readValue<AuthenticateByName>(response.body()?.string().toString())
-        return user
+        try {
+            val user = mapper.readValue<AuthenticateByName>(response.body()?.string().toString())
+            return user
+        }
+        catch (e: Exception) {
+            when {
+                response.code() == 500 -> throw HTTPException(500)
+                response.code() == 401 -> throw HTTPException(401)
+                else -> throw e
+            }
+        }
     }
 
     fun getPublicUsers(): List<User> {

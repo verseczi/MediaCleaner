@@ -10,8 +10,8 @@ import java.io.File
 
 
 class Config () {
-    val dir = File(System.getProperty("java.class.path")).absoluteFile.parentFile.toString()
-    val propertiesFile =  dir + System.getProperty("file.separator") + "Config.properties"
+    private val dir = File(System.getProperty("java.class.path")).absoluteFile.parentFile.toString()
+    private val propertiesFile =  dir + System.getProperty("file.separator") + "Config.properties"
 
     fun saveConfig(settings: Settings) {
         val properties = Properties()
