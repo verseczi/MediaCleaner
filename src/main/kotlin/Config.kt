@@ -15,7 +15,6 @@ class Config () {
 
     fun saveConfig(settings: Settings) {
         val properties = Properties()
-        println("yo?")
         properties.put("interval", settings.interval.toString())
         properties.put("hoursToKeep", settings.hoursToKeep.toString())
         properties.put("episodesToKeep", settings.episodesToKeep.toString())
@@ -41,7 +40,7 @@ class Config () {
 
         // Save to file.
         val fileOutputStream = FileOutputStream(propertiesFile)
-        properties.store(fileOutputStream, "I dont recommend changing this file if you dont know what you are doing-")
+        properties.store(fileOutputStream, "I dont recommend changing this file if you dont know what you are doing!")
     }
 
     fun getConfig(): Settings {
