@@ -14,9 +14,13 @@ class Settings(private val settings: Settings) {
         settings.keepFavoriteEpisodes = ConsoleRead.getBoolean("Should we keep your favorite episodes? (Note: Not all Media Servers support this.)", settings.keepFavoriteEpisodes)
         settings.debug = ConsoleRead.getBoolean("Debug mode", false)
         settings.trace = ConsoleRead.getBoolean("Trace mode", false)
+        settings.deleteMethod = ConsoleRead.getInt("Delete method (0=Default, 1=Sonarr. Note: If you have Sonarr, i would recommend using that option.)", settings.deleteMethod, listOf(0, 1))
+
         // Sonarr
-        settings.sonarrApiKey = ConsoleRead.getString("Sonarr API Key", settings.sonarrApiKey)
-        settings.sonarrAddress = ConsoleRead.getString("Sonarr address (e.g.: http://127.0.0.1:8989)",settings.sonarrAddress)
+        if(settings.deleteMethod == 1) {
+            settings.sonarrApiKey = ConsoleRead.getString("Sonarr API Key", settings.sonarrApiKey)
+            settings.sonarrAddress = ConsoleRead.getString("Sonarr address (e.g.: http://127.0.0.1:8989)",settings.sonarrAddress)
+        }
 
         // Media Server
         // TODO: Somehow move this whole mess with the media servers to a separate thing

@@ -9,6 +9,7 @@ data class Settings (
                     var debug: Boolean = false,
                     var trace: Boolean = false,
                     var logFile: String = "",
+                    var deleteMethod: Int = 0,
 
                     var sonarrApiKey: String = "",
                     var sonarrAddress: String = "http://127.0.0.1:8989",

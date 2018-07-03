@@ -1,45 +1,51 @@
 package com.mediacleaner.MediaServers
 
-import com.mediacleaner.Config
 import com.mediacleaner.DataModels.Emby.UserItems
 import com.mediacleaner.DataModels.Episode
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.IMediaServer
 import com.mediacleaner.RestClients.EmbyRestClient
-import com.mediacleaner.Utils.Logger
 import java.time.ZonedDateTime
 import java.util.*
 
-
 class Emby(override var settings: Settings) : IMediaServer {
-    val embyRestClient = EmbyRestClient(settings)
-    lateinit var UserItemList: UserItems
+    private val embyRestClient = EmbyRestClient(settings)
+    private lateinit var userItemList: UserItems
 
-    override fun getItem(EpisodePath: String): Episode? {
-        if (!::UserItemList.isInitialized)
-            UserItemList = embyRestClient.getUserItems()
+    override fun getEpisodeList(): List<Episode> {
+        val embyUserItems = getUserItems()
+        val userItems = mutableListOf<Episode>()
 
-        val result = UserItemList.Items
-                .firstOrNull { it.MediaSources.all { it?.Path == EpisodePath}}
+        for(userItem in embyUserItems.Items) {
+            val mediaSource = userItem.MediaSources.first()!!
+            if(mediaSource.Path != null && mediaSource.Protocol == "File") {
+                val season = try {
+                    Regex("[^0-9]").replace(userItem.SeasonName!!, "").toInt()
+                } catch (e: Exception) {
+                    0
+                }
 
-        if(result != null) {
-            // Season
-            var season: Int
-            try {season = Regex("[^0-9]").replace(result.SeasonName!!, "").toInt()} catch(e: Exception) {season = 0}
-
-            return Episode(
-                    result.SeriesName,
-                    season,
-                    result.IndexNumber,
-                    result.Name,
-                    EpisodePath,
-                    result.UserData.IsFavorite,
-                    result.UserData.Played,
-                    Date.from(ZonedDateTime.parse(result.DateCreated).toInstant())
-            )
+                userItems.add(Episode(
+                        userItem.SeriesName,
+                        season,
+                        userItem.IndexNumber,
+                        userItem.Name,
+                        mediaSource.Path,
+                        userItem.UserData.IsFavorite,
+                        userItem.UserData.Played,
+                        Date.from(ZonedDateTime.parse(userItem.DateCreated).toInstant()))
+                )
+            }
         }
 
-        return null
+        return userItems
+    }
+
+    private fun getUserItems(): UserItems {
+        if (!::userItemList.isInitialized)
+            userItemList = embyRestClient.getUserItems()
+
+        return userItemList
     }
 
     override fun checkConnection(): Boolean {

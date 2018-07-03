@@ -5,7 +5,7 @@ import com.mediacleaner.DataModels.Settings
 
 interface IMediaServer {
     var settings: Settings
-    fun getItem(EpisodePath: String): Episode?
+    fun getEpisodeList(): List<Episode>
     fun checkConnection(): Boolean
     fun checkSettings(): Boolean
 }

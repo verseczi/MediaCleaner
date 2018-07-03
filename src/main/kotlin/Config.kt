@@ -1,7 +1,6 @@
 package com.mediacleaner
 
 import com.mediacleaner.DataModels.Settings
-import com.mediacleaner.Utils.Logger
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.util.*
@@ -23,6 +22,7 @@ class Config () {
         properties.put("debug", settings.debug.toString())
         properties.put("trace", settings.trace.toString())
         properties.put("logFile", settings.logFile)
+        properties.put("deleteMethod", settings.deleteMethod.toString())
 
         properties.put("sonarrApiKey", settings.sonarrApiKey)
         properties.put("sonarrAddress", settings.sonarrAddress)
@@ -57,6 +57,7 @@ class Config () {
                 properties.getProperty("debug").toBoolean(),
                 properties.getProperty("trace").toBoolean(),
                 properties.getProperty("logFile"),
+                properties.getProperty("deleteMethod").toInt(),
 
                 properties.getProperty("sonarrApiKey"),
                 properties.getProperty("sonarrAddress"),

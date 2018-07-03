@@ -1,6 +1,5 @@
 package com.mediacleaner.app
 
-import com.mediacleaner.Config
 import com.mediacleaner.FileHandler
 import com.mediacleaner.MediaServer
 import com.mediacleaner.RestClients.SonarrRestClient
@@ -77,9 +76,9 @@ class MediaCleaner (private val settings: Settings) {
         }
 
         if(!error) {
-            var episodeList = fileHandler.getEpisodeList()
-            if (episodeList != null) {
-                episodeList = fileHandler.getEpisodeListByOrder(episodeList)
+            var episodeList = mServer.getEpisodeList()
+            if (!episodeList.isEmpty()) {
+                episodeList = mServer.getEpisodeListByOrder(episodeList)
                 var i = 0
                 var episodeCounter = 0
                 var deletedFiles = 0

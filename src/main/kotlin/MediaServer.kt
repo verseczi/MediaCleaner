@@ -16,12 +16,16 @@ class MediaServer (override var settings: Settings) : IMediaServer {
         initMediaServer()
     }
 
-    override fun getItem(EpisodePath: String): Episode? {
+
+    fun getEpisodeListByOrder(episodeList_: List<Episode>): List<Episode> {
+        val episodeList = episodeList_.sortedWith(compareBy<Episode> { it.SeriesName }.thenByDescending { it.SeasonNumber }.thenByDescending {it.EpisodeNumber})
+        return episodeList
+    }
+
+    override fun getEpisodeList(): List<Episode> {
         checkMediaServer()
-        val episode = mServer.getItem(EpisodePath)
-        if(episode != null)
-            return episode
-        return null
+
+        return mServer.getEpisodeList()
     }
 
     override fun checkConnection(): Boolean {
