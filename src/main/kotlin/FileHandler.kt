@@ -21,8 +21,7 @@ class FileHandler (private val mServer: MediaServer, private val sonarrRestClien
                         Files.delete(file)
                         true
                     } else {
-                        logger.error("There was an error deleting $filePath.")
-                        false
+                        throw Exception("File does not exist or it is a directory.")
                     }
                 }
                 1 -> {
@@ -32,19 +31,9 @@ class FileHandler (private val mServer: MediaServer, private val sonarrRestClien
                             val episodeList = sonarrRestClient.getEpisodebySeries(series.id.toString())
 
                             if (episodeList != null) {
-                                for (episode in episodeList) {
-                                    if (episode.hasFile) {
-                                        if(episode.episodeFile?.path == filePath) {
-                                            try {
-                                                sonarrRestClient.deleteEpisodeFile(episode.episodeFileId)
-                                                return true
-                                            } catch (e: Exception) {
-                                                logger.error("There was an error deleting $filePath.")
-                                                logger.error(e.toString())
-                                                return false
-                                            }
-                                        }
-                                    }
+                                val episode = episodeList.firstOrNull { it.episodeFile?.path == filePath}
+                                if (episode != null) {
+                                    sonarrRestClient.deleteEpisodeFile(episode.episodeFileId)
                                 }
                             }
                         }
@@ -52,6 +41,8 @@ class FileHandler (private val mServer: MediaServer, private val sonarrRestClien
                 }
             }
         } catch (e: Exception) {
+            logger.error("There was an error deleting $filePath.")
+            logger.error(e.toString())
             throw e
         }
 
