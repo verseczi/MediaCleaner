@@ -3,9 +3,11 @@ package com.mediacleaner
 import com.mediacleaner.DataModels.Episode
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.MediaServers.Emby
+import com.mediacleaner.Utils.ConsoleRead
 import com.mediacleaner.Utils.Logger
+import java.util.*
 
-class MediaServer (override var settings: Settings) : IMediaServer {
+class MediaServer (override var properties: Properties, override var settings: Settings) : IMediaServer {
     val logger = Logger(this.javaClass.name, settings)
     var timestamp: Long = 0
     private var timestamp_last: Long = 0
@@ -40,7 +42,13 @@ class MediaServer (override var settings: Settings) : IMediaServer {
 
     override fun checkSettings(): Boolean {
         checkMediaServer()
-        return mServer.checkSettings()
+
+        return try {
+            mServer.checkSettings()
+        } catch (e: Exception) {
+            logger.error(e.message.toString())
+            throw e
+        }
     }
 
     private fun checkMediaServer() {
@@ -49,13 +57,32 @@ class MediaServer (override var settings: Settings) : IMediaServer {
     }
 
     private fun initMediaServer() {
-        when(settings.mediaServer) {
-            0 -> mServer = Emby(settings)
-            //1 -> mServer = Plex()
+        try {
+            when (settings.mediaServer) {
+                0 -> mServer = Emby(settings, properties)
+                //1 -> mServer = Plex()
+            }
+            timestamp_last = timestamp
+            mServerT = settings.mediaServer
+        } catch (e: Exception) {
+            throw e
         }
-        timestamp_last = timestamp
-        mServerT = settings.mediaServer
-        mServer
     }
 
+    override fun readSettingsCLI(properties: Properties): Properties {
+        settings.mediaServer = ConsoleRead.getInt("Which Media Server would you like to use (0=Emby)", 0,
+                listOf(0), "There is no Media Server with this ID!")
+
+        // If the media server is changed then this should clear the previously used media server's settings from the properties variable.
+        if(mServerT != settings.mediaServer) {
+            mServer.removeSettings(properties)
+            checkMediaServer()
+        }
+
+        return mServer.readSettingsCLI(properties)
+    }
+
+    override fun removeSettings(properties: Properties): Properties {
+        return mServer.removeSettings(properties)
+    }
 }

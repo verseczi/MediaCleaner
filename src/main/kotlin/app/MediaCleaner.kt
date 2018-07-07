@@ -11,12 +11,10 @@ import java.time.LocalDate
 import java.util.Timer
 import java.util.concurrent.TimeUnit
 
-class MediaCleaner (private val settings: Settings) {
+class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
     val logger = Logger(this.javaClass.name, settings)
     var cancelled: Boolean = false
-    var mServer = MediaServer(settings)
-    var sonarrRestClient = SonarrRestClient(settings)
-    val fileHandler = FileHandler(mServer, sonarrRestClient)
+    val fileHandler = FileHandler(mServer)
     var timer = Timer()
     var retry = 0
 
@@ -45,7 +43,7 @@ class MediaCleaner (private val settings: Settings) {
         var error = false
         if(!error) {
             try {
-                if(!mServer.checkConnection() || !sonarrRestClient.checkConnection())
+                if(!mServer.checkConnection() || !fileHandler.ready())
                     error = true
             } catch (e: SocketTimeoutException) {
                 logger.error("Can't connect to the servers.")
@@ -53,15 +51,6 @@ class MediaCleaner (private val settings: Settings) {
             } catch (e: Exception) {
                 logger.error("Something went wrong.")
                 error = true
-            }
-        }
-
-        if(!error) {
-            try {
-                if(!sonarrRestClient.checkAPIKey())
-                    logger.error("Sonarr API key is invalid.")
-            } catch (e: Exception) {
-                logger.error("Sonarr checkAPIKey: $e")
             }
         }
 

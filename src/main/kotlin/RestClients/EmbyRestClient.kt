@@ -7,6 +7,7 @@ import com.mediacleaner.DataModels.Emby.AuthenticateByName
 import com.mediacleaner.DataModels.Emby.User
 import com.mediacleaner.DataModels.Emby.UserItems
 import com.mediacleaner.DataModels.Settings
+import com.mediacleaner.MediaServers.Emby
 import com.mediacleaner.Utils.HashUtils
 import com.mediacleaner.Utils.Logger
 import okhttp3.MediaType
@@ -15,16 +16,15 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import javax.xml.ws.http.HTTPException
 
-class EmbyRestClient (val settings: Settings) {
+class EmbyRestClient (val settings: Settings, val settings_emby: Emby.embySettings) {
     private val logger = Logger(this.javaClass.name, settings)
-    private val url = settings.embyAddress
     private val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     private val client = OkHttpClient()
 
     fun checkConnection(): Boolean {
-        val url = "$url/System/Info"
+        val url = "${settings_emby.Address}/System/Info"
         val request = Request.Builder()
-                .header("X-MediaBrowser-Token", settings.embyAccessToken)
+                .header("X-MediaBrowser-Token", settings_emby.accessToken)
                 .url(url)
                 .build()
 
@@ -46,9 +46,9 @@ class EmbyRestClient (val settings: Settings) {
     }
 
     fun getUserItems(): UserItems {
-        val url = "$url/Users/${settings.embyUserId}/Items?recursive=true&IncludeItemTypes=Episode&Fields=MediaSources,DateCreated"
+        val url = "${settings_emby.Address}/Users/${settings_emby.userId}/Items?recursive=true&IncludeItemTypes=Episode&Fields=MediaSources,DateCreated"
         val request = Request.Builder()
-                .header("X-MediaBrowser-Token", settings.embyAccessToken)
+                .header("X-MediaBrowser-Token", settings_emby.accessToken)
                 .url(url)
                 .build()
         var content: String
@@ -69,7 +69,7 @@ class EmbyRestClient (val settings: Settings) {
 
 
     fun getAccessToken(username: String, password: String = ""): AuthenticateByName {
-        val url = "$url/Users/AuthenticateByName"
+        val url = "${settings_emby.Address}/Users/AuthenticateByName"
         val json = """
             {
                 "Username":"${username}",
@@ -100,7 +100,7 @@ class EmbyRestClient (val settings: Settings) {
     }
 
     fun getPublicUsers(): List<User> {
-        val url = "$url/Users/Public"
+        val url = "${settings_emby.Address}/Users/Public"
         val request = Request.Builder()
                 .url(url)
                 .build()

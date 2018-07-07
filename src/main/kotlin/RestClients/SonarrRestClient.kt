@@ -7,22 +7,22 @@ import com.mediacleaner.Config
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.DataModels.Sonarr.Episode
 import com.mediacleaner.DataModels.Sonarr.Series
+import com.mediacleaner.Sonarr
 import com.mediacleaner.Utils.Logger
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import javax.xml.ws.http.HTTPException
 
 
-class SonarrRestClient (val settings: Settings) {
+class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sonarrSettings) {
     private val logger = Logger(this.javaClass.name, settings)
-    private var url: String = settings.sonarrAddress
     private val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     private var client = OkHttpClient()
 
     fun checkConnection(): Boolean {
-        val url = "$url/system/status"
+        val url = "${sonarr_settings.Address}/system/status"
         val request = Request.Builder()
-                .header("X-Api-Key", settings.sonarrApiKey)
+                .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
         try {
@@ -42,9 +42,9 @@ class SonarrRestClient (val settings: Settings) {
     }
 
     fun checkAPIKey(): Boolean {
-        val url = "$url/system/status"
+        val url = "${sonarr_settings.Address}/system/status"
         val request = Request.Builder()
-                .header("X-Api-Key", settings.sonarrApiKey)
+                .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
         try {
@@ -58,9 +58,9 @@ class SonarrRestClient (val settings: Settings) {
     }
 
     fun getEpisodebySeries(seriesId: String): List<Episode>? {
-        val url = "$url/Episode?SeriesId=$seriesId"
+        val url = "${sonarr_settings.Address}/Episode?SeriesId=$seriesId"
         val request = Request.Builder()
-                .header("X-Api-Key", settings.sonarrApiKey)
+                .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
 
@@ -76,9 +76,9 @@ class SonarrRestClient (val settings: Settings) {
     }
 
     fun getSeriesList(): List<Series>? {
-        val url = "$url/Series"
+        val url = "${sonarr_settings.Address}/Series"
         val request = Request.Builder()
-                .header("X-Api-Key", settings.sonarrApiKey)
+                .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
 
@@ -93,10 +93,10 @@ class SonarrRestClient (val settings: Settings) {
     }
 
     fun deleteEpisodeFile(episodeID: Int): Boolean {
-        val url = "$url/EpisodeFile/$episodeID"
+        val url = "${sonarr_settings.Address}/EpisodeFile/$episodeID"
 
         val request = Request.Builder()
-                .header("X-Api-Key", settings.sonarrApiKey)
+                .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .delete()
                 .build()
