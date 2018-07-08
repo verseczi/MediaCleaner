@@ -20,7 +20,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
     private var client = OkHttpClient()
 
     fun checkConnection(): Boolean {
-        val url = "${sonarr_settings.Address}/system/status"
+        val url = "${sonarr_settings.Address}/api/system/status"
         val request = Request.Builder()
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
@@ -42,7 +42,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
     }
 
     fun checkAPIKey(): Boolean {
-        val url = "${sonarr_settings.Address}/system/status"
+        val url = "${sonarr_settings.Address}/api/system/status"
         val request = Request.Builder()
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
@@ -58,7 +58,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
     }
 
     fun getEpisodebySeries(seriesId: String): List<Episode>? {
-        val url = "${sonarr_settings.Address}/Episode?SeriesId=$seriesId"
+        val url = "${sonarr_settings.Address}/api/Episode?SeriesId=$seriesId"
         val request = Request.Builder()
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
@@ -81,7 +81,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
     }
 
     fun getSeriesList(): List<Series>? {
-        val url = "${sonarr_settings.Address}/Series"
+        val url = "${sonarr_settings.Address}/api/Series"
         val request = Request.Builder()
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
@@ -104,7 +104,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
     }
 
     fun deleteEpisodeFile(episodeID: Int): Boolean {
-        val url = "${sonarr_settings.Address}/EpisodeFile/$episodeID"
+        val url = "${sonarr_settings.Address}/api/EpisodeFile/$episodeID"
 
         val request = Request.Builder()
                 .header("X-Api-Key", sonarr_settings.APIKey)
