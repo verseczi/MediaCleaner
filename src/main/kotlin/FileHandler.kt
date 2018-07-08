@@ -47,14 +47,14 @@ class FileHandler (mServer: MediaServer){
                 0 -> {
                     val file = Paths.get(filePath)
                     return if(Files.exists(file) && !Files.isDirectory(file)) {
-                        //Files.delete(file)
+                        Files.delete(file)
                         true
                     } else {
                         throw Exception("File does not exist or it is a directory.")
                     }
                 }
                 1 -> {
-                    //sonarr.deleteEpisode(filePath)
+                    sonarr.deleteEpisode(filePath)
                 }
             }
         } catch (e: Exception) {

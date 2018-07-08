@@ -29,9 +29,9 @@ mainClassName = "com.mediacleaner.MainKt"
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3"
+    compile 'com.squareup.moshi:moshi-kotlin:1.6.0'
 }
 
 run {

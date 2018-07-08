@@ -1,14 +1,14 @@
 package com.mediacleaner.RestClients
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.mediacleaner.Config
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.DataModels.Sonarr.Episode
 import com.mediacleaner.DataModels.Sonarr.Series
 import com.mediacleaner.Sonarr
 import com.mediacleaner.Utils.Logger
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import javax.xml.ws.http.HTTPException
@@ -16,7 +16,7 @@ import javax.xml.ws.http.HTTPException
 
 class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sonarrSettings) {
     private val logger = Logger(this.javaClass.name, settings)
-    private val mapper = jacksonObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     private var client = OkHttpClient()
 
     fun checkConnection(): Boolean {
@@ -52,7 +52,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
             return response.message() == "OK"
         }
         catch(e: Exception) {
-            println("Exception: $e")
+            logger.error("Exception: $e")
             return false
         }
     }
@@ -64,13 +64,18 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
                 .url(url)
                 .build()
 
-        try {
-            val response = client.newCall(request).execute()
-            val content = response.body()!!.string()
-            val episodeList = mapper.readValue<List<Episode>>(content)
-            return episodeList
+        val response = try {
+            client.newCall(request).execute()
         } catch (e: Exception) {
-            println(e)
+            throw e
+        }
+
+        val content = response.body()!!.string()
+        try {
+            val adapter: JsonAdapter<List<Episode>> = moshi.adapter(Types.newParameterizedType(List::class.java, Episode::class.java))
+            return adapter.fromJson(content)!!
+        } catch (e: Exception) {
+            logger.trace(content)
             throw e
         }
     }
@@ -82,12 +87,18 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
                 .url(url)
                 .build()
 
-        try {
-            val response = client.newCall(request).execute()
-            val seriesList = mapper.readValue<List<Series>>(response.body()!!.string())
-            return seriesList
+        val response = try {
+            client.newCall(request).execute()
         } catch (e: Exception) {
-            println(e)
+            throw e
+        }
+
+        val content = response.body()!!.string()
+        try {
+            val adapter: JsonAdapter<List<Series>> = moshi.adapter(Types.newParameterizedType(List::class.java, Series::class.java))
+            return adapter.fromJson(content)!!
+        } catch (e: Exception) {
+            logger.trace(content)
             throw e
         }
     }

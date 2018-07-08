@@ -3,6 +3,7 @@ package com.mediacleaner
 import com.mediacleaner.DataModels.Episode
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.MediaServers.Emby
+import com.mediacleaner.MediaServers.Plex
 import com.mediacleaner.Utils.ConsoleRead
 import com.mediacleaner.Utils.Logger
 import java.util.*
@@ -17,7 +18,6 @@ class MediaServer (override var properties: Properties, override var settings: S
     init {
         initMediaServer()
     }
-
 
     fun getEpisodeListByOrder(episodeList_: List<Episode>): List<Episode> {
         val episodeList = episodeList_.sortedWith(compareBy<Episode> { it.SeriesName }.thenByDescending { it.SeasonNumber }.thenByDescending {it.EpisodeNumber})
@@ -60,7 +60,7 @@ class MediaServer (override var properties: Properties, override var settings: S
         try {
             when (settings.mediaServer) {
                 0 -> mServer = Emby(settings, properties)
-                //1 -> mServer = Plex()
+                1 -> mServer = Plex(settings, properties)
             }
             timestamp_last = timestamp
             mServerT = settings.mediaServer
@@ -70,8 +70,10 @@ class MediaServer (override var properties: Properties, override var settings: S
     }
 
     override fun readSettingsCLI(properties: Properties): Properties {
-        settings.mediaServer = ConsoleRead.getInt("Which Media Server would you like to use (0=Emby)", 0,
-                listOf(0), "There is no Media Server with this ID!")
+        settings.mediaServer = ConsoleRead.getInt("Which Media Server would you like to use (0=Emby; 1=Plex)", settings.mediaServer,
+                listOf(0,1), "There is no Media Server with this ID!")
+        properties.put("mediaServer", settings.mediaServer.toString())
+
 
         // If the media server is changed then this should clear the previously used media server's settings from the properties variable.
         if(mServerT != settings.mediaServer) {
