@@ -37,11 +37,9 @@ class PlexRestClient (val settings: Settings, val settings_plex: Plex.plexSettin
                 throw HTTPException(401)
         }
         catch(e: HTTPException) {
-            logger.error("HTTPException: ${e.statusCode}")
             throw e
         }
         catch(e: Exception) {
-            logger.error("Exception: ${e.localizedMessage}")
             throw e
         }
     }
@@ -58,7 +56,6 @@ class PlexRestClient (val settings: Settings, val settings_plex: Plex.plexSettin
         val response = try {
             client.newCall(request).execute()
         } catch (e: Exception) {
-            println(e)
             throw e
         }
 
@@ -81,14 +78,14 @@ class PlexRestClient (val settings: Settings, val settings_plex: Plex.plexSettin
         val response = try {
             client.newCall(request).execute()
         } catch (e: Exception) {
-            println(e)
             throw e
         }
 
+        val content = response.body()!!.string()
         try {
-            return moshi.adapter(Container::class.java).fromJson(response.body()!!.string())!!
+            return moshi.adapter(Container::class.java).fromJson(content)!!
         } catch (e: Exception) {
-            logger.trace(response.body()!!.string())
+            logger.trace(content)
             throw e
         }
     }
@@ -137,7 +134,6 @@ class PlexRestClient (val settings: Settings, val settings_plex: Plex.plexSettin
         val response = try {
             client.newCall(request).execute()
         } catch (e: Exception) {
-            println(e)
             throw e
         }
 

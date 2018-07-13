@@ -37,11 +37,9 @@ class EmbyRestClient (val settings: Settings, val settings_emby: Emby.embySettin
                 throw HTTPException(401)
         }
         catch(e: HTTPException) {
-            logger.error("HTTPException: ${e.statusCode}")
             throw e
         }
         catch(e: Exception) {
-            logger.error("Exception: ${e.localizedMessage}")
             throw e
         }
     }
@@ -102,7 +100,6 @@ class EmbyRestClient (val settings: Settings, val settings_emby: Emby.embySettin
                 response.code() == 500 -> throw HTTPException(500)
                 response.code() == 401 -> throw HTTPException(401)
                 else -> {
-                    logger.trace(content)
                     throw e
                 }
             }
@@ -130,5 +127,4 @@ class EmbyRestClient (val settings: Settings, val settings_emby: Emby.embySettin
             throw e
         }
     }
-
 }

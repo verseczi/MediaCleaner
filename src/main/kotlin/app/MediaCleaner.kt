@@ -93,6 +93,17 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                         } else {
                             fileDeletable = true
                         }
+
+                        if(fileDeletable) {
+                            val excludedPhrases: List<String> = settings.excludedPhrases.split(";")
+
+                            for(phrase in excludedPhrases) {
+                                if(episode.SeriesName.contains(phrase)) {
+                                    fileDeletable = false
+                                    notDeletableBecause += " excludedPhrases;"
+                                }
+                            }
+                        }
                     }
 
                     if(!episode.Played)

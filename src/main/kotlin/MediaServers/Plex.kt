@@ -6,11 +6,13 @@ import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.IMediaServer
 import com.mediacleaner.RestClients.PlexRestClient
 import com.mediacleaner.Utils.ConsoleRead
+import com.mediacleaner.Utils.Logger
 import java.time.ZonedDateTime
 import java.util.*
 import javax.xml.ws.http.HTTPException
 
 class Plex(override var settings: Settings, override var properties: Properties) : IMediaServer {
+    private val logger = Logger(this.javaClass.name, settings)
     private val settings_plex: plexSettings = getSettings()
     private val plexRestClient = PlexRestClient(settings, settings_plex)
 
@@ -73,7 +75,7 @@ class Plex(override var settings: Settings, override var properties: Properties)
                 }
             }
         } catch (e: Exception) {
-            println(e)
+            logger.error("Exception: ${e.message}")
         }
 
         return userItems

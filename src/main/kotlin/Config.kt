@@ -46,7 +46,8 @@ class Config {
                 properties.getProperty("debug").toBoolean(),
                 properties.getProperty("trace").toBoolean(),
                 properties.getProperty("logFile"),
-                properties.getProperty("deleteMethod").toInt()
+                properties.getProperty("deleteMethod").toInt(),
+                properties.getProperty("excludedPhrases")
             )
     }
 
@@ -61,6 +62,7 @@ class Config {
         properties.put("trace", settings.trace.toString())
         properties.put("logFile", settings.logFile)
         properties.put("deleteMethod", settings.deleteMethod.toString())
+        properties.put("excludedPhrases", settings.excludedPhrases)
 
         return properties
     }

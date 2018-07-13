@@ -25,19 +25,18 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
-        try {
+        return try {
             val response = client.newCall(request).execute()
             if(response.message() == "OK")
-                return true
+                true
             else
                 throw HTTPException(401)
         }
         catch(e: HTTPException) {
-            logger.error("HTTPException: ${e.statusCode}")
             throw e
         }
         catch(e: Exception) {
-            throw e
+            false
         }
     }
 
@@ -47,13 +46,12 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
                 .header("X-Api-Key", sonarr_settings.APIKey)
                 .url(url)
                 .build()
-        try {
+        return try {
             val response = client.newCall(request).execute()
-            return response.message() == "OK"
-        }
-        catch(e: Exception) {
+            response.message() == "OK"
+        } catch(e: Exception) {
             logger.error("Exception: $e")
-            return false
+            false
         }
     }
 
@@ -103,7 +101,7 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
         }
     }
 
-    fun deleteEpisodeFile(episodeID: Int): Boolean {
+    fun deleteEpisodeFile(episodeID: Int) {
         val url = "${sonarr_settings.Address}/api/EpisodeFile/$episodeID"
 
         val request = Request.Builder()
@@ -114,11 +112,11 @@ class SonarrRestClient (val settings: Settings, val sonarr_settings: Sonarr.sona
 
         try {
             val response = client.newCall(request).execute()
-            return response.message() == "OK"
+            if(response.message() != "OK")
+                logger.trace(response.body()!!.string())
         }
         catch(e: Exception) {
-            println("Exception: $e")
-            return false
+            throw e
         }
     }
 }

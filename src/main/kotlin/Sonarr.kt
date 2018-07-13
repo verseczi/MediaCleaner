@@ -3,11 +3,13 @@ package com.mediacleaner
 import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.RestClients.SonarrRestClient
 import com.mediacleaner.Utils.ConsoleRead
+import com.mediacleaner.Utils.Logger
 import java.util.*
 
 class Sonarr(val properties: Properties, val settings: Settings) {
-    val settings_sonarr = getSettings()
-    val sonarrRestClient = SonarrRestClient(settings, settings_sonarr)
+    private val logger = Logger(this.javaClass.name, settings)
+    private val settings_sonarr = getSettings()
+    private val sonarrRestClient = SonarrRestClient(settings, settings_sonarr)
 
     fun deleteEpisode(filePath: String) {
         try {

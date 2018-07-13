@@ -6,11 +6,13 @@ import com.mediacleaner.DataModels.Settings
 import com.mediacleaner.IMediaServer
 import com.mediacleaner.RestClients.EmbyRestClient
 import com.mediacleaner.Utils.ConsoleRead
+import com.mediacleaner.Utils.Logger
 import java.time.ZonedDateTime
 import java.util.*
 import javax.xml.ws.http.HTTPException
 
 class Emby(override var settings: Settings, override var properties: Properties) : IMediaServer {
+    private val logger = Logger(this.javaClass.name, settings)
     private lateinit var userItemList: UserItems
     private val settings_emby: embySettings = getSettings()
     private val embyRestClient = EmbyRestClient(settings, settings_emby)
@@ -19,9 +21,9 @@ class Emby(override var settings: Settings, override var properties: Properties)
         val embyUserItems = getUserItems()
         val userItems = mutableListOf<Episode>()
 
-        for(userItem in embyUserItems.Items) {
+        for (userItem in embyUserItems.Items) {
             val mediaSource = userItem.MediaSources.first()!!
-            if(mediaSource.Path != null && mediaSource.Protocol == "File") {
+            if (mediaSource.Path != null && mediaSource.Protocol == "File") {
                 val season = try {
                     Regex("[^0-9]").replace(userItem.SeasonName!!, "").toInt()
                 } catch (e: Exception) {
@@ -45,8 +47,12 @@ class Emby(override var settings: Settings, override var properties: Properties)
     }
 
     private fun getUserItems(): UserItems {
-        if (!::userItemList.isInitialized)
-            userItemList = embyRestClient.getUserItems()
+        try {
+            if (!::userItemList.isInitialized)
+                userItemList = embyRestClient.getUserItems()
+        } catch (e: Exception) {
+            logger.error("Exception ${e.message}")
+        }
 
         return userItemList
     }

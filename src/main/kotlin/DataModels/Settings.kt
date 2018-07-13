@@ -9,5 +9,6 @@ data class Settings (
                     var debug: Boolean = false,
                     var trace: Boolean = false,
                     var logFile: String = "mediaCleaner.log",
-                    var deleteMethod: Int = 0
+                    var deleteMethod: Int = 0,
+                    var excludedPhrases: String = ""
                     )
