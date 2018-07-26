@@ -101,7 +101,6 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                                 if(phrase != "") {
                                     if (episode.SeriesName.contains(phrase)) {
                                         fileDeletable = false
-                                        logger.error(episode.SeriesName + " {" + phrase + "]")
                                         notDeletableBecause += " excludedPhrases;"
                                     }
                                 }
