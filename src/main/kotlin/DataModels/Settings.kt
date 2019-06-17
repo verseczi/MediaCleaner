@@ -4,6 +4,7 @@ data class Settings (
                     var interval: Int = 60,
                     var hoursToKeep: Int = 168,
                     var episodesToKeep: Int = 5,
+                    var keepLastSeason: Boolean = true,
                     var keepFavoriteEpisodes: Boolean = true,
                     var mediaServer: Int = 0,
                     var debug: Boolean = false,

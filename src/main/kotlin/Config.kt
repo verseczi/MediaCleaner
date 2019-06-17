@@ -41,6 +41,7 @@ class Config {
                 properties.getProperty("interval").toInt(),
                 properties.getProperty("hoursToKeep").toInt(),
                 properties.getProperty("episodesToKeep").toInt(),
+                properties.getProperty("keepLastSeason").toBoolean(),
                 properties.getProperty("keepFavoriteEpisodes").toBoolean(),
                 properties.getProperty("mediaServer").toInt(),
                 properties.getProperty("debug").toBoolean(),
@@ -56,6 +57,7 @@ class Config {
         properties.put("interval", settings.interval.toString())
         properties.put("hoursToKeep", settings.hoursToKeep.toString())
         properties.put("episodesToKeep", settings.episodesToKeep.toString())
+        properties.put("keepLastSeason", settings.keepLastSeason.toString())
         properties.put("keepFavoriteEpisodes", settings.keepFavoriteEpisodes.toString())
         properties.put("mediaServer", settings.mediaServer.toString())
         properties.put("debug", settings.debug.toString())

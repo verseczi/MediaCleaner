@@ -70,6 +70,7 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                 episodeList = mServer.getEpisodeListByOrder(episodeList)
                 var i = 0
                 var episodeCounter = 0
+                var lastWatchedSeason = -1
                 var deletedFiles = 0
                 while (i < episodeList.count()) {
                     val episode = episodeList[i]
@@ -77,11 +78,16 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                     var notDeletableBecause = ""
 
                     if(i != 0) {
-                        if(episodeList[i].SeriesName != episodeList[i-1].SeriesName)
+                        if(episodeList[i].SeriesName != episodeList[i-1].SeriesName) {
                             episodeCounter = 0
+                            lastWatchedSeason = -1
+                        }
                     }
 
                     val timeDiff = TimeUnit.MILLISECONDS.toHours(DateUtils.asDate(LocalDate.now()).time  - episode.dateAdded.time)
+
+                    if(episode.Played && lastWatchedSeason == -1)
+                        lastWatchedSeason = episode.SeasonNumber
 
                     if(timeDiff > settings.hoursToKeep
                             && episode.Played
@@ -92,6 +98,12 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                                 fileDeletable = true
                         } else {
                             fileDeletable = true
+                        }
+
+                        if(settings.keepLastSeason) {
+                            if (lastWatchedSeason == episode.SeasonNumber) {
+                                fileDeletable = false
+                            }
                         }
 
                         if(fileDeletable) {
@@ -112,10 +124,12 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                         notDeletableBecause += " Played;"
                     if(settings.keepFavoriteEpisodes && episode.IsFavorite)
                         notDeletableBecause += " IsFavorite;"
-                    if(episodeCounter <= settings.episodesToKeep)
+                    if(episodeCounter < settings.episodesToKeep)
                         notDeletableBecause += " episodesToKeep;"
                     if(timeDiff < settings.hoursToKeep)
                         notDeletableBecause += " timeDiff;"
+                    if(settings.keepLastSeason && lastWatchedSeason == episode.SeasonNumber)
+                        notDeletableBecause += " keepLastWatchedSeason;"
 
                     logger.info("[${episode.SeriesName}] - Season: [${episode.SeasonNumber}] - Episode: ${episode.EpisodeNumber} - [${episode.EpisodeTitle}]: FilePath: ${episode.FilePath}; IsFavorite: ${episode.IsFavorite}; Played: ${episode.Played}; dateAdded: ${episode.dateAdded}; timeDiff: $timeDiff; deletable: $fileDeletable; Reason why its not deletable: $notDeletableBecause")
                     if(fileDeletable) {

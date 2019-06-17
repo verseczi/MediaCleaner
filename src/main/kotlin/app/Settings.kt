@@ -8,6 +8,7 @@ import java.util.*
 
 class Settings(private val properties: Properties, private val settings: Settings) {
     fun getSettings(): Properties {
+        properties.put("keepLastSeason", ConsoleRead.getBoolean("Should we keep the last watched season", settings.keepLastSeason).toString())
         properties.put("episodesToKeep", ConsoleRead.getInt("How many episodes should we keep", settings.episodesToKeep).toString())
         properties.put("hoursToKeep", ConsoleRead.getInt("How long should we keep them (hours)", settings.hoursToKeep).toString())
         properties.put("interval", ConsoleRead.getInt("How much time should be between two cleanings", settings.interval).toString())
