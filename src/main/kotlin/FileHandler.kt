@@ -45,24 +45,30 @@ class FileHandler (mServer: MediaServer){
     }
 
     fun deleteFile(filePath: String): Boolean {
-        try {
-            when(settings.deleteMethod) {
-                0 -> {
-                    val file = Paths.get(filePath)
-                    return if(Files.exists(file) && !Files.isDirectory(file)) {
-                        Files.delete(file)
-                        true
-                    } else {
-                        throw Exception("File does not exist or it is a directory.")
+        if(!settings.trace) {
+            try {
+                when (settings.deleteMethod) {
+                    0 -> {
+                        val file = Paths.get(filePath)
+                        return if (Files.exists(file) && !Files.isDirectory(file)) {
+                            Files.delete(file)
+                            true
+                        } else {
+                            throw Exception("File does not exist or it is a directory.")
+                        }
+                    }
+                    1 -> {
+                        sonarr.deleteEpisode(filePath)
                     }
                 }
-                1 -> {
-                    sonarr.deleteEpisode(filePath)
-                }
+            } catch (e: Exception) {
+                logger.error("There was an error deleting $filePath.")
+                logger.error("${e.message}")
             }
-        } catch (e: Exception) {
-            logger.error("There was an error deleting $filePath.")
-            logger.error("${e.message}")
+        }
+        else {
+            logger.info("File was not deleted because trace mode is turned on.")
+            return true
         }
 
         return false

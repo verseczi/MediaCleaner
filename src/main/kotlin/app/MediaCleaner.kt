@@ -49,7 +49,7 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                 logger.error("Can't connect to the servers.")
                 error = true
             } catch (e: Exception) {
-                logger.error("Something went wrong.")
+                logger.error("Something went wrong. Error: ${e.message}")
                 error = true
             }
         }
