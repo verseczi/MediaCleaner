@@ -53,8 +53,6 @@ class MediaServer (override var properties: Properties, override var settings: S
     }
 
     private fun checkMediaServer() {
-        println(timestamp)
-        println(timestamp_last)
         if(timestamp != timestamp_last || mServerT != settings.mediaServer)
             initMediaServer()
     }
