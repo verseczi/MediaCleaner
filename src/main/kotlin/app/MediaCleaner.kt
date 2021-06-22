@@ -2,14 +2,15 @@ package com.mediacleaner.app
 
 import com.mediacleaner.FileHandler
 import com.mediacleaner.MediaServer
-import com.mediacleaner.RestClients.SonarrRestClient
 import com.mediacleaner.Utils.DateUtils
+import com.mediacleaner.Utils.FileUtils
 import com.mediacleaner.Utils.Logger
 import com.mediacleaner.DataModels.Settings
 import java.net.SocketTimeoutException
 import java.time.LocalDate
 import java.util.Timer
 import java.util.concurrent.TimeUnit
+import java.io.File
 
 class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
     val logger = Logger(this.javaClass.name, settings)
@@ -72,6 +73,7 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                 var episodeCounter = 0
                 var lastWatchedSeason = -1
                 var deletedFiles = 0
+                var savedSpace : Long = 0
                 while (i < episodeList.count()) {
                     val episode = episodeList[i]
                     var fileDeletable = false
@@ -135,6 +137,7 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                     if(fileDeletable) {
                         logger.info("File deleted: ${episode.FilePath}")
                         fileHandler.deleteFile(episode.FilePath)
+                        savedSpace += FileUtils.getFileSize(File(episode.FilePath))
                         deletedFiles++
                     }
                     if(episode.Played)
@@ -144,6 +147,7 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
 
                 logger.info("episodeList.count(): ${episodeList.count()}")
                 logger.info("Deleted files: $deletedFiles")
+                logger.info("Saved space: ${FileUtils.humanReadableByteCountSI(savedSpace)}")
             }
 
             if (retry > 0) {
