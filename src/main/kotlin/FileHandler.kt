@@ -49,6 +49,9 @@ class FileHandler (mServer: MediaServer){
             try {
                 when (settings.deleteMethod) {
                     0 -> {
+
+                    }
+                    1 -> {
                         val file = Paths.get(filePath)
                         return if (Files.exists(file) && !Files.isDirectory(file)) {
                             Files.delete(file)
@@ -57,7 +60,7 @@ class FileHandler (mServer: MediaServer){
                             throw Exception("File does not exist or it is a directory.")
                         }
                     }
-                    1 -> {
+                    2 -> {
                         sonarr.deleteEpisode(filePath)
                     }
                 }

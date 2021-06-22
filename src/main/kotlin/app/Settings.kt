@@ -16,7 +16,7 @@ class Settings(private val properties: Properties, private val settings: Setting
         properties.put("debug", ConsoleRead.getBoolean("Debug mode", false).toString())
         properties.put("trace", ConsoleRead.getBoolean("Trace mode", false).toString())
         properties.put("logFile", settings.logFile)
-        properties.put("deleteMethod", ConsoleRead.getInt("Delete method (0=Default, 1=Sonarr. Note: If you have Sonarr, i would recommend using that option.)", settings.deleteMethod, listOf(0, 1)).toString())
+        properties.put("deleteMethod", ConsoleRead.getInt("Delete method (0=No-Deletion, 1=Default, 2=Sonarr. Note: If you have Sonarr, i would recommend using that option.)", settings.deleteMethod, listOf(0, 1)).toString())
 
         return properties
     }

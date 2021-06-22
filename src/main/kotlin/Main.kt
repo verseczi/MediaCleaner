@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
             val settings = config.getSettings(properties)
 
             // Sonarr
-            if(settings.deleteMethod == 1) {
+            if(settings.deleteMethod == 2) {
                 val sonarr = Sonarr(properties, settings)
                 properties = sonarr.getSettingsCLI(properties)
             }
