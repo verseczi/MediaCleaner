@@ -9,7 +9,7 @@ data class UserItems(
             val Id: String?,
             val DateCreated: String,
             val MediaSources: List<MediaSource?> = emptyList(),
-            val IndexNumber: Int,
+            val IndexNumber: Int = 0,
             val UserData: UserData,
             val SeriesName: String,
             val SeasonName: String?
