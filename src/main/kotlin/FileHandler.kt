@@ -16,7 +16,7 @@ class FileHandler (mServer: MediaServer){
 
     init {
         when(settings.deleteMethod) {
-            1-> sonarr = Sonarr(mServer.properties, mServer.settings)
+            2 -> sonarr = Sonarr(mServer.properties, mServer.settings)
         }
     }
 

@@ -136,8 +136,8 @@ class MediaCleaner (private val mServer: MediaServer,  val settings: Settings) {
                     logger.info("[${episode.SeriesName}] - Season: [${episode.SeasonNumber}] - Episode: ${episode.EpisodeNumber} - [${episode.EpisodeTitle}]: FilePath: ${episode.FilePath}; IsFavorite: ${episode.IsFavorite}; Played: ${episode.Played}; dateAdded: ${episode.dateAdded}; timeDiff: $timeDiff; deletable: $fileDeletable; Reason why its not deletable: $notDeletableBecause")
                     if(fileDeletable) {
                         logger.info("File deleted: ${episode.FilePath}")
-                        fileHandler.deleteFile(episode.FilePath)
                         savedSpace += FileUtils.getFileSize(File(episode.FilePath))
+                        fileHandler.deleteFile(episode.FilePath)
                         deletedFiles++
                     }
                     if(episode.Played)
