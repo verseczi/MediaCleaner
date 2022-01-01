@@ -9,8 +9,7 @@ import java.io.File
 
 
 class Config {
-    private val dir = File(System.getProperty("java.class.path")).absoluteFile.parentFile.toString()
-    private val propertiesFile =  dir + System.getProperty("file.separator") + "Config.properties"
+    private val propertiesFile =  "./Config.properties"
 
     fun saveConfig(properties: Properties) {
         var prop = properties
